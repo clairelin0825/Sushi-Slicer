@@ -85,11 +85,11 @@ def draw_lives(display, x, y, lives, image) :
 # show game over display & front display
 def show_gameover_screen():
     gameDisplay.blit(background, (0,0))
-    draw_text(gameDisplay, "FRUIT NINJA!", 90, WIDTH / 2, HEIGHT / 4)
+    draw_text(gameDisplay, "SUSHI SLICER", 90, WIDTH / 2, HEIGHT / 4)
     if not game_over :
         draw_text(gameDisplay,"Score : " + str(score), 50, WIDTH / 2, HEIGHT /2)
 
-    draw_text(gameDisplay, "Press a key to begin!", 64, WIDTH / 2, HEIGHT * 3 / 4)
+    draw_text(gameDisplay, "Press any key to begin!", 64, WIDTH / 2, HEIGHT * 3 / 4)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -104,6 +104,7 @@ def show_gameover_screen():
 first_round = True
 game_over = True        #terminates the game While loop if more than 3-Bombs are cut
 game_running = True     #used to manage the game loop
+cut_fruit = False
 while game_running :
     if game_over :
         if first_round :
@@ -138,35 +139,44 @@ while game_running :
 
             current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
 
-            if not value['hit'] and current_position[0] > value['x'] and current_position[0] < value['x']+60 \
-                    and current_position[1] > value['y'] and current_position[1] < value['y']+60:
+            if not value['hit'] and current_position[0] > value['x']-60 and current_position[0] < value['x']+60 \
+                    and current_position[1] > value['y']-60 and current_position[1] < value['y']+60:
+                        # changed from +60 to -/+60: modifies the slicing fruit range, makes it easier to slice/more sensitive to mouse movement
                 if key == 'bomb':
-                    player_lives -= 1
-                    if player_lives == 0:
-                        
-                        hide_cross_lives(690, 15)
-                    elif player_lives == 1 :
-                        hide_cross_lives(725, 15)
-                    elif player_lives == 2 :
-                        hide_cross_lives(760, 15)
-                    #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
-                    if player_lives < 0 :
-                        show_gameover_screen()
-                        game_over = True
-
-                    half_fruit_path = "/Users/claire/Downloads/fruit-ninja-game-python-code/images/explosion.png"
+                    show_gameover_screen()
+                    game_over = True
+                    
                 else:
-                    half_fruit_path = "/Users/claire/Downloads/fruit-ninja-game-python-code/images/" + "half_" + key + ".png"
-
+                    
+                    half_fruit_path = "/Users/claire/Downloads/fruit-ninja-game-python-code/images/" + "half_" + key + ".png"  
+            
+                cut_fruit = True
                 value['img'] = pygame.image.load(half_fruit_path)
                 value['speed_x'] += 10
+                
                 if key != 'bomb' :
                     score += 1
                 score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
                 value['hit'] = True
+                
+            if not cut_fruit:
+              
+                show_gameover_screen()
+                game_over = True
+            
+                '''if player_lives == 0:
+                    hide_cross_lives(690, 15)
+                elif player_lives == 1 :
+                    hide_cross_lives(725, 15)
+                elif player_lives == 2 :
+                    hide_cross_lives(760, 15)
+                    #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
+                if player_lives < 0 :
+                    show_gameover_screen()
+                    game_over = True'''
         else:
             generate_random_fruits(key)
-            #pygame.time.wait(250)
+
         
 
     pygame.display.update()
