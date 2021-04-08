@@ -43,7 +43,7 @@ lives_icon = pygame.image.load('images/white_lives.png')              #images th
 def generate_random_ingredients(ingredient):
     ingredient_path = "images/" + ingredient + ".png"
     data[ingredient] = {
-        'img1': pygame.image.load(ingredient_path),
+        'img': pygame.image.load(ingredient_path),
         'x' : random.randint(100,500),          #where the fruit should be positioned on x-coordinate
         'y' : 800,
         'speed_x': random.randint(-10,10),      #how fast the fruit should move in x direction. Controls the diagonal movement of fruits
