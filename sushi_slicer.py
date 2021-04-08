@@ -1,7 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Apr  3 20:49:59 2021
+
+@author: claire
+"""
+
 import pygame, sys
 import os
 import random
-
 
 player_lives = 3                                                #keep track of lives
 score = 0                                                       #keeps track of score
@@ -12,7 +19,7 @@ WIDTH = 800
 HEIGHT = 500
 FPS = 12                                                 #controls how often the gameDisplay should refresh. In our case, it will refresh every 1/12th second
 pygame.init()
-pygame.display.set_caption('Sushi Slicer Game -- DataFlair')
+pygame.display.set_caption('Fruit-Ninja Game -- DataFlair')
 gameDisplay = pygame.display.set_mode((WIDTH, HEIGHT))   #setting game display size
 clock = pygame.time.Clock()
 
@@ -24,36 +31,39 @@ GREEN = (0,255,0)
 BLUE = (0,0,255)
 
 background = pygame.image.load('back.jpg')                                  #game background
-font = pygame.font.Font(os.path.join(os.getcwd(), 'comic.ttf'), 42)
+font = pygame.font.Font(os.path.join(os.getcwd(),'comic.ttf'), 42)
 score_text = font.render('Score : ' + str(score), True, (255, 255, 255))    #score display
 lives_icon = pygame.image.load('images/white_lives.png')                    #images that shows remaining lives
 
 # Generalized structure of the fruit Dictionary
-def generate_random_ingredients(ingredient):
+def generate_random_fruits(ingredient):
     fruit_path = "images/" + ingredient + ".png"
     data[ingredient] = {
         'img': pygame.image.load(fruit_path),
         'x' : random.randint(100,500),          #where the fruit should be positioned on x-coordinate
         'y' : 800,
-        'speed_x': random.randint(-10,10),      #how fast the fruit should move in x direction. Controls the diagonal movement of fruits
-        'speed_y': random.randint(-80, -60),    #control the speed of fruits in y-directionn ( UP )
+        'speed_x': random.randint(-20,20),      #how fast the fruit should move in x direction. Controls the diagonal movement of fruits
+        'speed_y': random.randint(-80, -70),    #control the speed of fruits in y-directionn ( UP )
         'throw': False,                         #determines if the generated coordinate of the fruits is outside the gameDisplay or not. If outside, then it will be discarded
         't': 0,                                 #manages the
         'hit': False,
     }
 
-    if random.random() >= 0.75:     #Return the next random floating point number in the range [0.0, 1.0) to keep the fruits inside the gameDisplay
-        data[ingredient]['throw'] = True
+    if random.random() >= 0.9:     #Return the next random floating point number in the range [0.0, 1.0) to keep the fruits inside the gameDisplay
+                                   #changes how many fruit are thrown up at once (i.e. the closer to 1, the less fruit)
+                                    # generate random fruit
+        data[fruit]['throw'] = True
+        pygame.time.wait(300)      #wait 300 milliseconds between each toss 
     else:
-        data[ingredient]['throw'] = False
+        data[fruit]['throw'] = False
 
 # Dictionary to hold the data the random fruit generation
 data = {}
-for ingredient in ingredients:
-    generate_random_ingredients(ingredient)
+for fruit in fruits:
+    generate_random_fruits(fruit)
 
 def hide_cross_lives(x, y):
-    gameDisplay.blit(pygame.image.load("images/red_lives.png"), (x, y))
+    gameDisplay.blit(pygame.image.load("/Users/claire/Downloads/fruit-ninja-game-python-code/images/red_lives.png"), (x, y))
 
 # Generic method to draw fonts on the screen
 font_name = pygame.font.match_font('comic.ttf')
@@ -76,11 +86,11 @@ def draw_lives(display, x, y, lives, image) :
 # show game over display & front display
 def show_gameover_screen():
     gameDisplay.blit(background, (0,0))
-    draw_text(gameDisplay, "Sushi Slicer!", 90, WIDTH / 2, HEIGHT / 4)
+    draw_text(gameDisplay, "SUSHI SLICER", 90, WIDTH / 2, HEIGHT / 4)
     if not game_over :
         draw_text(gameDisplay,"Score : " + str(score), 50, WIDTH / 2, HEIGHT /2)
 
-    draw_text(gameDisplay, "Press a key to begin!", 64, WIDTH / 2, HEIGHT * 3 / 4)
+    draw_text(gameDisplay, "Press any key to begin!", 64, WIDTH / 2, HEIGHT * 3 / 4)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -94,9 +104,7 @@ def show_gameover_screen():
 # Game Loop
 first_round = True
 game_over = True        #terminates the game While loop if more than 3-Bombs are cut
-game_running = True
-cut_fruit = False
-#used to manage the game loop
+game_running = True     #used to manage the game loop
 while game_running :
     if game_over :
         if first_round :
@@ -104,7 +112,7 @@ while game_running :
             first_round = False
         game_over = False
         player_lives = 3
-        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+        draw_lives(gameDisplay, 690, 5, player_lives, '/Users/claire/Downloads/fruit-ninja-game-python-code/images/red_lives.png')
         score = 0
 
     for event in pygame.event.get():
@@ -114,60 +122,63 @@ while game_running :
 
     gameDisplay.blit(background, (0, 0))
     gameDisplay.blit(score_text, (0, 0))
-    draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+    draw_lives(gameDisplay, 690, 5, player_lives, '/Users/claire/Downloads/fruit-ninja-game-python-code/images/red_lives.png')
 
     for key, value in data.items():
         if value['throw']:
             value['x'] += value['speed_x']          #moving the fruits in x-coordinates
             value['y'] += value['speed_y']          #moving the fruits in y-coordinate
-            value['speed_y'] += (1 * value['t'])    #increasing y-corrdinate
+            value['speed_y'] += (1 * value['t'])    #increasing y-coordinate
             value['t'] += 0.9                        #increasing speed_y for next loop
-
+            
             if value['y'] <= 800:
-                gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
+                gameDisplay.blit(value['img'], (value['x'], value['y']))#displaying the fruit inside screen dynamically
+                
             else:
-                #fruit has disappeared at this point
+                #one fruit has disappeared at this point
                 if not value['hit']:
-                    player_lives -= 1
+                    player_lives -=1
                     if player_lives == 0:
                         hide_cross_lives(690, 15)
                     elif player_lives == 1 :
                         hide_cross_lives(725, 15)
                     elif player_lives == 2 :
                         hide_cross_lives(760, 15)
-                    #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
+                        #if the user misses fruits, GAME OVER message should be displayed and the window should be reset 
+                   
                     if player_lives < 0 :
                         show_gameover_screen()
                         game_over = True
-                generate_random_ingredients(key)
+                    generate_random_fruits(key)
 
             current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
 
             if not value['hit'] and current_position[0] > value['x']-60 and current_position[0] < value['x']+60 \
-                    and current_position[1] > value['y'] -60 and current_position[1] < value['y']+60:
-
-                    #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
-                if key == 'bomb':
+                    and current_position[1] > value['y']-60 and current_position[1] < value['y']+60:
+                        # changed from +60 to -/+60: modifies the slicing fruit range, makes it easier to slice/more sensitive to mouse movement
+                if key == 'bomb':   #if you have hit bomb, the game is over
                     show_gameover_screen()
                     game_over = True
+                    
                 else:
-                    cut_ingredient_path = "images/" + "cut_" + key + ".png"
-
-                value['img'] = pygame.image.load(cut_ingredient_path)
+                    
+                    half_fruit_path = "/Users/claire/Downloads/fruit-ninja-game-python-code/images/" + "half_" + key + ".png"  
+            
+                value['img'] = pygame.image.load(half_fruit_path)
                 value['speed_x'] += 10
+                
                 if key != 'bomb' :
                     score += 1
                 score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
                 value['hit'] = True
-
-
-
-
+                
+            
         else:
-            generate_random_ingredients(key)
+            generate_random_fruits(key)
+
+        
 
     pygame.display.update()
-    clock.tick(8)      # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
-                        
+    clock.tick(8)      # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec                   
 
 pygame.quit()
