@@ -1,12 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr  6 16:49:59 2021
-
-@author: claire
-"""
-
-
 import pygame, sys
 import os
 import random
@@ -14,7 +5,7 @@ import random
 
 player_lives = 3                                                #keep track of lives
 score = 0                                                       #keeps track of score
-ingredients = ['Avocado', 'Carrot', 'Crab', 'Cucumber', 'Eel', 'Salmon', 'Shrimp','Tamago','Tuna', 'Riceglob']    #entities in the game
+ingredients = ['Avocado', 'Carrot', 'Crab', 'Cucumber', 'Eel', 'Salmon', 'Shrimp','Tamago', 'Tuna', 'Riceglob']    #entities in the game
 
 # initialize pygame and create window
 WIDTH = 800
@@ -60,6 +51,7 @@ def generate_random_ingredients(ingredient):
 
 # Dictionary to hold the data the random fruit generation
 data = {}
+
 for ingredient in ingredients:
     generate_random_ingredients(ingredient)
 
@@ -153,19 +145,19 @@ while game_running :
 
             current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
 
-            if not value['hit'] and current_position[0] > value['x']-60 and current_position[0] < value['x']+60 \
-                    and current_position[1] > value['y'] -60 and current_position[1] < value['y']+60:
+            if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
+                    and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
 
                     #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
                 if key == 'Riceglob':
                     show_gameover_screen()
                     game_over = True
                 else:
-                    cut_ingredient_path = "images/" + "cut_" + key + ".png"
+                    cut_ingredient_path = "images/cut_" + key + ".png"
 
                 value['img'] = pygame.image.load(cut_ingredient_path)
                 value['speed_x'] += 10
-                if key != 'Riceglob' :
+                if key != 'Riceglob':
                     score += 1
                 score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
                 value['hit'] = True
@@ -178,6 +170,6 @@ while game_running :
 
     pygame.display.update()
     clock.tick(8)      # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
-                        
+
 
 pygame.quit()
