@@ -99,8 +99,13 @@ first_round = True
 game_over = True        #terminates the game While loop if more than 3-Bombs are cut
 game_running = True
 #used to manage the game loop
-while game_running :
-    if game_over :
+while game_running:
+    random_data = {}
+    random_number = random.randint(1,3)
+    for i in range(0, random_number):
+        random_index = random.randint(0,9)
+        random_data.update({ingredients[random_index]: data[ingredients[random_index]]})
+    if game_over:
         if first_round :
             show_gameover_screen()
             first_round = False
@@ -118,7 +123,7 @@ while game_running :
     gameDisplay.blit(score_text, (0, 0))
     draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
 
-    for key, value in data.items():
+    for key, value in random_data.items():
         if value['throw']:
             value['x'] += value['speed_x']          #moving the fruits in x-coordinates
             value['y'] += value['speed_y']          #moving the fruits in y-coordinate
