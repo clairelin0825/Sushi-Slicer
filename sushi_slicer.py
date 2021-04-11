@@ -5,7 +5,7 @@ import random
 
 player_lives = 3                                                #keep track of lives
 score = 0                                                       #keeps track of score
-ingredients = ['Avocado', 'Carrot', 'Crab', 'Cucumber', 'Eel', 'Salmon', 'Shrimp','Tamago', 'Tuna', 'Riceglob']    #entities in the game
+ingredients = ['Riceglob','Avocado', 'Carrot', 'Crab', 'Cucumber', 'Eel', 'Salmon', 'Shrimp','Tamago', 'Tuna']    #entities in the game
 
 # initialize pygame and create window
 WIDTH = 800
@@ -51,10 +51,9 @@ def generate_random_ingredients(ingredient):
 
 # Dictionary to hold the data the random fruit generation
 data = {}
-random_number = random.randint(1,6)
+random_number = random.randint(2,4)
 for i in range(0, random_number):
-    random_index = random.randint(0,9)
-    generate_random_ingredients(ingredients[random_index])
+    generate_random_ingredients(ingredients[i])
 
 #for ingredient in ingredients:
 
@@ -140,7 +139,7 @@ while game_running:
                 gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
             else:
                 #fruit has disappeared at this point
-                if not value['hit']:
+                if not value['hit'] and key != 'Riceglob':
                     player_lives -= 1
                     if player_lives == 0:
                         hide_cross_lives(690, 15)
@@ -152,8 +151,7 @@ while game_running:
                     if player_lives < 0 :
                         show_gameover_screen()
                         game_over = True
-                data = {}
-                random_number = random.randint(1,6)
+
                 generate_random_ingredients(key)
 
             current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
