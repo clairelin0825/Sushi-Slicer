@@ -51,9 +51,14 @@ def generate_random_ingredients(ingredient):
 
 # Dictionary to hold the data the random fruit generation
 data = {}
+random_number = random.randint(1,6)
+for i in range(0, random_number):
+    random_index = random.randint(0,9)
+    generate_random_ingredients(ingredients[random_index])
 
-for ingredient in ingredients:
-    generate_random_ingredients(ingredient)
+#for ingredient in ingredients:
+
+    #generate_random_ingredients(ingredient)
 
 def hide_cross_lives(x, y):
     gameDisplay.blit(pygame.image.load("images/red_lives.png"), (x, y))
@@ -100,11 +105,12 @@ game_over = True        #terminates the game While loop if more than 3-Bombs are
 game_running = True
 #used to manage the game loop
 while game_running:
-    random_data = {}
-    random_number = random.randint(1,3)
-    for i in range(0, random_number):
-        random_index = random.randint(0,9)
-        random_data.update({ingredients[random_index]: data[ingredients[random_index]]})
+    #random_data = {}
+    #random_number = random.randint(1,3)
+    #for i in range(0, random_number):
+        #random_index = random.randint(0,9)
+        #random_data.update({ingredients[random_index]: data[ingredients[random_index]]})
+    #print(random_data)
     if game_over:
         if first_round :
             show_gameover_screen()
@@ -123,11 +129,11 @@ while game_running:
     gameDisplay.blit(score_text, (0, 0))
     draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
 
-    for key, value in random_data.items():
+    for key, value in data.items():
         if value['throw']:
             value['x'] += value['speed_x']          #moving the fruits in x-coordinates
             value['y'] += value['speed_y']          #moving the fruits in y-coordinate
-            value['speed_y'] += (1 * value['t'])    #increasing y-corrdinate
+            value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
             value['t'] += 0.9                        #increasing speed_y for next loop
 
             if value['y'] <= 800:
@@ -146,6 +152,8 @@ while game_running:
                     if player_lives < 0 :
                         show_gameover_screen()
                         game_over = True
+                data = {}
+                random_number = random.randint(1,6)
                 generate_random_ingredients(key)
 
             current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
@@ -174,7 +182,7 @@ while game_running:
             generate_random_ingredients(key)
 
     pygame.display.update()
-    clock.tick(8)      # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
+    clock.tick(FPS)      # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
 
 
 pygame.quit()
