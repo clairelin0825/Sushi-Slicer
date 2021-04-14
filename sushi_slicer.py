@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr  6 16:49:59 2021
+
+@author: claire
+"""
+
 import pygame, sys
 import os
 import random
@@ -174,21 +182,24 @@ while game_running and score < 4:
 
     pygame.display.update()
     clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
+
+
 data = {}
 #random_number = random.randint(2,4)
-for i in range(0, 8):
+for i in range(0, 3):
     generate_random_ingredients(ingredients[i])
-first_round = True
-game_over = True        #terminates the game While loop if more than 3-Bombs are cut
+
+#first_round = True
+#game_over = True        #terminates the game While loop if more than 3-Bombs are cut
 game_running = True
 while game_running and score >= 4 and score < 10:
-    if game_over:
-        if first_round :
-            show_gameover_screen()
-            first_round = False
-        game_over = False
-        player_lives = 3
-        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+#    if game_over:
+#        if first_round :
+#            show_gameover_screen()
+#            first_round = False
+#        game_over = False
+#       player_lives = 3
+#        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
     for event in pygame.event.get():
         # checking for closing window
         if event.type == pygame.QUIT:
@@ -251,19 +262,22 @@ while game_running and score >= 4 and score < 10:
 
     pygame.display.update()
     clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
+
+data = {}
 for ingredient in ingredients:
     generate_random_ingredients(ingredient)
-first_round = True
-game_over = True        #terminates the game While loop if more than 3-Bombs are cut
+
+#first_round = True
+#game_over = True        #terminates the game While loop if more than 3-Bombs are cut
 game_running = True
 while game_running and score >= 10:
-    if game_over:
-        if first_round :
-            show_gameover_screen()
-            first_round = False
-        game_over = False
-        player_lives = 3
-        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+#    if game_over:
+#        if first_round :
+#            show_gameover_screen()
+#            first_round = False
+#        game_over = False
+#        player_lives = 3
+#        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
     for event in pygame.event.get():
         # checking for closing window
         if event.type == pygame.QUIT:
