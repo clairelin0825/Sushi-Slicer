@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr  6 16:49:59 2021
-
-@author: claire
-"""
-
 import pygame, sys
 import os
 import random
@@ -111,65 +103,150 @@ first_round = True
 game_over = True        #terminates the game While loop if more than 3-Bombs are cut
 game_running = True
 #used to manage the game loop
-while game_running and score < 4:
-    if game_over:
-        if first_round :
-            show_gameover_screen()
-            first_round = False
-        game_over = False
-        player_lives = 3
+while game_running:
+    data = {}
+    for i in range(0, 2):
+        generate_random_ingredients(ingredients[i])
+    while score < 4:
+
+        if game_over:
+            if first_round :
+                show_gameover_screen()
+                first_round = False
+            game_over = False
+            player_lives = 3
+            draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+            score = 0
+        for event in pygame.event.get():
+            # checking for closing window
+            if event.type == pygame.QUIT:
+                game_running = False
+
+        gameDisplay.blit(background, (0, 0))
+        gameDisplay.blit(score_text, (0, 0))
         draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
-        score = 0
-    for event in pygame.event.get():
-        # checking for closing window
-        if event.type == pygame.QUIT:
-            game_running = False
 
-    gameDisplay.blit(background, (0, 0))
-    gameDisplay.blit(score_text, (0, 0))
-    draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+        for key, value in data.items():
+            if value['throw']:
+                value['x'] += value['speed_x']          #moving the fruits in x-coordinates
+                value['y'] += value['speed_y']          #moving the fruits in y-coordinate
+                value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
+                value['t'] += 0.9                        #increasing speed_y for next loop
 
-    for key, value in data.items():
-        if value['throw']:
-            value['x'] += value['speed_x']          #moving the fruits in x-coordinates
-            value['y'] += value['speed_y']          #moving the fruits in y-coordinate
-            value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
-            value['t'] += 0.9                        #increasing speed_y for next loop
+                if value['y'] <= 800:
+                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
+                else:
+                    #fruit has disappeared at this point
+                    if not value['hit'] and key != 'Riceglob':
+                        player_lives -= 1
+                        if player_lives == 0:
+                            hide_cross_lives(690, 15)
+                        elif player_lives == 1 :
+                            hide_cross_lives(725, 15)
+                        elif player_lives == 2 :
+                            hide_cross_lives(760, 15)
+                        #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
+                        if player_lives < 0 :
+                            show_gameover_screen()
+                            game_over = True
+                            score = 0
 
-            if value['y'] <= 800:
-                gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
-            else:
-                #fruit has disappeared at this point
-                if not value['hit'] and key != 'Riceglob':
-                    player_lives -= 1
-                    if player_lives == 0:
-                        hide_cross_lives(690, 15)
-                    elif player_lives == 1 :
-                        hide_cross_lives(725, 15)
-                    elif player_lives == 2 :
-                        hide_cross_lives(760, 15)
-                    #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
-                    if player_lives < 0 :
+                    generate_random_ingredients(key)
+
+                current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
+
+                if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
+                        and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
+
+                        #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
+                    if key == 'Riceglob':
                         show_gameover_screen()
                         game_over = True
                         score = 0
-
+                    else:
+                        cut_ingredient_path = "images/cut_" + key + ".png"
+                        value['img'] = pygame.image.load(cut_ingredient_path)
+                        value['speed_x'] += 10
+                        if key != 'Riceglob':
+                            if key == 'Tamago':
+                                score += 2
+                            else:
+                                score += 1
+                        score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
+                        value['hit'] = True
+            else:
                 generate_random_ingredients(key)
 
-            current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
+        pygame.display.update()
+        clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
 
-            if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
-                    and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
 
-                    #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
-                if key == 'Riceglob':
-                    show_gameover_screen()
-                    game_over = True
-                    score = 0
+    data = {}
+    #random_number = random.randint(2,4)
+    for i in range(0, 3):
+        generate_random_ingredients(ingredients[i])
+
+    #first_round = True
+    #game_over = True        #terminates the game While loop if more than 3-Bombs are cut
+    game_running = True
+    while score >= 4 and score < 10:
+    #    if game_over:
+    #        if first_round :
+    #            show_gameover_screen()
+    #            first_round = False
+    #        game_over = False
+    #       player_lives = 3
+    #        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+        for event in pygame.event.get():
+            # checking for closing window
+            if event.type == pygame.QUIT:
+                game_running = False
+        gameDisplay.blit(background, (0, 0))
+        gameDisplay.blit(score_text, (0, 0))
+        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+
+        for key, value in data.items():
+            if value['throw']:
+                value['x'] += value['speed_x']          #moving the fruits in x-coordinates
+                value['y'] += value['speed_y']          #moving the fruits in y-coordinate
+                value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
+                value['t'] += 0.9                        #increasing speed_y for next loop
+
+                if value['y'] <= 800:
+                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
                 else:
-                    cut_ingredient_path = "images/cut_" + key + ".png"
-                    value['img'] = pygame.image.load(cut_ingredient_path)
-                    value['speed_x'] += 10
+                    #fruit has disappeared at this point
+                    if not value['hit'] and key != 'Riceglob':
+                        player_lives -= 1
+                        if player_lives == 0:
+                            hide_cross_lives(690, 15)
+                        elif player_lives == 1 :
+                            hide_cross_lives(725, 15)
+                        elif player_lives == 2 :
+                            hide_cross_lives(760, 15)
+                        #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
+                        if player_lives < 0 :
+                            show_gameover_screen()
+                            game_over = True
+                            score = 0
+
+                    generate_random_ingredients(key)
+
+                current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
+
+                if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
+                        and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
+
+                        #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
+                    if key == 'Riceglob':
+                        show_gameover_screen()
+                        game_over = True
+                        score = 0
+                    else:
+                        cut_ingredient_path = "images/cut_" + key + ".png"
+                        value['img'] = pygame.image.load(cut_ingredient_path)
+                        value['speed_x'] += 10
+
                     if key != 'Riceglob':
                         if key == 'Tamago':
                             score += 2
@@ -177,168 +254,88 @@ while game_running and score < 4:
                             score += 1
                     score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
                     value['hit'] = True
-        else:
-            generate_random_ingredients(key)
-
-    pygame.display.update()
-    clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
-
-
-data = {}
-#random_number = random.randint(2,4)
-for i in range(0, 3):
-    generate_random_ingredients(ingredients[i])
-
-#first_round = True
-#game_over = True        #terminates the game While loop if more than 3-Bombs are cut
-game_running = True
-while game_running and score >= 4 and score < 10:
-#    if game_over:
-#        if first_round :
-#            show_gameover_screen()
-#            first_round = False
-#        game_over = False
-#       player_lives = 3
-#        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
-    for event in pygame.event.get():
-        # checking for closing window
-        if event.type == pygame.QUIT:
-            game_running = False
-    gameDisplay.blit(background, (0, 0))
-    gameDisplay.blit(score_text, (0, 0))
-    draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
-
-    for key, value in data.items():
-        if value['throw']:
-            value['x'] += value['speed_x']          #moving the fruits in x-coordinates
-            value['y'] += value['speed_y']          #moving the fruits in y-coordinate
-            value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
-            value['t'] += 0.9                        #increasing speed_y for next loop
-
-            if value['y'] <= 800:
-                gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
             else:
-                #fruit has disappeared at this point
-                if not value['hit'] and key != 'Riceglob':
-                    player_lives -= 1
-                    if player_lives == 0:
-                        hide_cross_lives(690, 15)
-                    elif player_lives == 1 :
-                        hide_cross_lives(725, 15)
-                    elif player_lives == 2 :
-                        hide_cross_lives(760, 15)
-                    #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
-                    if player_lives < 0 :
+                generate_random_ingredients(key)
+
+        pygame.display.update()
+        clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
+
+    data = {}
+    for ingredient in ingredients:
+        generate_random_ingredients(ingredient)
+
+    #first_round = True
+    #game_over = True        #terminates the game While loop if more than 3-Bombs are cut
+    game_running = True
+    while score >= 10:
+    #    if game_over:
+    #        if first_round :
+    #            show_gameover_screen()
+    #            first_round = False
+    #        game_over = False
+    #        player_lives = 3
+    #        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+        for event in pygame.event.get():
+            # checking for closing window
+            if event.type == pygame.QUIT:
+                game_running = False
+        gameDisplay.blit(background, (0, 0))
+        gameDisplay.blit(score_text, (0, 0))
+        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+
+        for key, value in data.items():
+            if value['throw']:
+                value['x'] += value['speed_x']          #moving the fruits in x-coordinates
+                value['y'] += value['speed_y']          #moving the fruits in y-coordinate
+                value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
+                value['t'] += 0.9                        #increasing speed_y for next loop
+
+                if value['y'] <= 800:
+                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
+                else:
+                    #fruit has disappeared at this point
+                    if not value['hit'] and key != 'Riceglob':
+                        player_lives -= 1
+                        if player_lives == 0:
+                            hide_cross_lives(690, 15)
+                        elif player_lives == 1 :
+                            hide_cross_lives(725, 15)
+                        elif player_lives == 2 :
+                            hide_cross_lives(760, 15)
+                        #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
+                        if player_lives < 0 :
+                            show_gameover_screen()
+                            game_over = True
+                            score = 0
+
+                    generate_random_ingredients(key)
+
+                current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
+
+                if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
+                        and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
+
+                        #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
+                    if key == 'Riceglob':
                         show_gameover_screen()
                         game_over = True
                         score = 0
-
-                generate_random_ingredients(key)
-
-            current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
-
-            if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
-                    and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
-
-                    #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
-                if key == 'Riceglob':
-                    show_gameover_screen()
-                    game_over = True
-                    score = 0
-                else:
-                    cut_ingredient_path = "images/cut_" + key + ".png"
-                    value['img'] = pygame.image.load(cut_ingredient_path)
-                    value['speed_x'] += 10
-
-                if key != 'Riceglob':
-                    if key == 'Tamago':
-                        score += 2
                     else:
-                        score += 1
-                score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
-                value['hit'] = True
-        else:
-            generate_random_ingredients(key)
+                        cut_ingredient_path = "images/cut_" + key + ".png"
+                        value['img'] = pygame.image.load(cut_ingredient_path)
+                        value['speed_x'] += 10
 
-    pygame.display.update()
-    clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
-
-data = {}
-for ingredient in ingredients:
-    generate_random_ingredients(ingredient)
-
-#first_round = True
-#game_over = True        #terminates the game While loop if more than 3-Bombs are cut
-game_running = True
-while game_running and score >= 10:
-#    if game_over:
-#        if first_round :
-#            show_gameover_screen()
-#            first_round = False
-#        game_over = False
-#        player_lives = 3
-#        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
-    for event in pygame.event.get():
-        # checking for closing window
-        if event.type == pygame.QUIT:
-            game_running = False
-    gameDisplay.blit(background, (0, 0))
-    gameDisplay.blit(score_text, (0, 0))
-    draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
-
-    for key, value in data.items():
-        if value['throw']:
-            value['x'] += value['speed_x']          #moving the fruits in x-coordinates
-            value['y'] += value['speed_y']          #moving the fruits in y-coordinate
-            value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
-            value['t'] += 0.9                        #increasing speed_y for next loop
-
-            if value['y'] <= 800:
-                gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
+                    if key != 'Riceglob':
+                        if key == 'Tamago':
+                            score += 2
+                        else:
+                            score += 1
+                    score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
+                    value['hit'] = True
             else:
-                #fruit has disappeared at this point
-                if not value['hit'] and key != 'Riceglob':
-                    player_lives -= 1
-                    if player_lives == 0:
-                        hide_cross_lives(690, 15)
-                    elif player_lives == 1 :
-                        hide_cross_lives(725, 15)
-                    elif player_lives == 2 :
-                        hide_cross_lives(760, 15)
-                    #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
-                    if player_lives < 0 :
-                        show_gameover_screen()
-                        game_over = True
-                        score = 0
-
                 generate_random_ingredients(key)
 
-            current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
-
-            if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
-                    and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
-
-                    #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
-                if key == 'Riceglob':
-                    show_gameover_screen()
-                    game_over = True
-                    score = 0
-                else:
-                    cut_ingredient_path = "images/cut_" + key + ".png"
-                    value['img'] = pygame.image.load(cut_ingredient_path)
-                    value['speed_x'] += 10
-
-                if key != 'Riceglob':
-                    if key == 'Tamago':
-                        score += 2
-                    else:
-                        score += 1
-                score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
-                value['hit'] = True
-        else:
-            generate_random_ingredients(key)
-
-    pygame.display.update()
-    clock.tick(FPS)
+        pygame.display.update()
+        clock.tick(FPS)
 
 pygame.quit()
