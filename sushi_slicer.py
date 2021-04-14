@@ -1,7 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr  6 16:49:59 2021
+
+@author: claire
+"""
+
 import pygame, sys
 import os
 import random
-
+pygame.init()
 
 player_lives = 3                                                #keep track of lives
 score = 0                                                       #keeps track of score
@@ -24,6 +32,7 @@ BLACK = (0,0,0)
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
+
 
 background = pygame.image.load('seaweed.jpeg')                                  #game background
 font = pygame.font.Font(os.path.join(os.getcwd(), 'comic.ttf'), 42)
@@ -85,11 +94,12 @@ def draw_lives(display, x, y, lives, image) :
 key1 = ''
 def show_gameover_screen():
     gameDisplay.blit(background, (0,0))
-    draw_text(gameDisplay, "Sushi Slicer!", 90, WIDTH / 2, HEIGHT / 4)
+    draw_text(gameDisplay, "Fruit Ninja/Sushi Slicer!", 90, WIDTH / 2, HEIGHT / 4)
     if not game_over :
         draw_text(gameDisplay,"Score : " + str(score), 50, WIDTH / 2, HEIGHT /2)
 
-    draw_text(gameDisplay, "Press a key to begin!", 64, WIDTH / 2, HEIGHT * 3 / 4)
+    draw_text(gameDisplay, "Press SPACE to begin Sushi Slicer mode!", 40, WIDTH / 2, HEIGHT * 3 / 4)
+    draw_text(gameDisplay, "Press RETURN to begin Fruit Ninja mode!", 40, WIDTH / 2, HEIGHT * 2 / 3)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -97,7 +107,7 @@ def show_gameover_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     key1 = 'fruits'
                     waiting = False
