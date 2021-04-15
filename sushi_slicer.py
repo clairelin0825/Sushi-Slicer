@@ -26,7 +26,7 @@ BLUE = (0,0,255)
 
 background1 = pygame.image.load('sushi/background.jpeg')
 background1 = pygame.transform.scale(background1, (800,500))
-font = pygame.font.Font(os.path.join(os.getcwd(), 'comic.ttf'), 42)
+font = pygame.font.Font(os.path.join(os.getcwd(), 'sushi/comic.ttf'), 42)
 score_text = font.render('Score : ' + str(score), True, (255, 255, 255))    #score display
 lives_icon = pygame.image.load('sushi/images/white_lives.png')                    #images that shows remaining lives
 
