@@ -30,22 +30,22 @@ font = pygame.font.Font(os.path.join(os.getcwd(), 'sushi/comic.ttf'), 42)
 score_text = font.render('Score : ' + str(score), True, (255, 255, 255))    #score display
 lives_icon = pygame.image.load('sushi/images/white_lives.png')                    #images that shows remaining lives
 
-# Generalized structure of the fruit Dictionary
+# Generalized structure of the objects (either sushi ingredients or fruits) Dictionary
 data = {}
 def generate_random_ingredients(ingredient):
     ingredient_path = "sushi/images/" + ingredient + ".png"
     data[ingredient] = {
         'img': pygame.image.load(ingredient_path),
-        'x' : random.randint(100,500),          #where the fruit should be positioned on x-coordinate
+        'x' : random.randint(100,500),          #where the object should be positioned on x-coordinate
         'y' : 800,
-        'speed_x': random.randint(-10,10),      #how fast the fruit should move in x direction. Controls the diagonal movement of fruits
-        'speed_y': random.randint(-80, -60),    #control the speed of fruits in y-directionn ( UP )
-        'throw': False,                         #determines if the generated coordinate of the fruits is outside the gameDisplay or not. If outside, then it will be discarded
+        'speed_x': random.randint(-10,10),      #how fast the object should move in x direction. Controls the diagonal movement of fruits/sushi ingredients
+        'speed_y': random.randint(-80, -60),    #control the speed of onjects in y-directionn ( UP )
+        'throw': False,                         #determines if the generated coordinate of the objects is outside the gameDisplay or not. If outside, then it will be discarded
         't': 0,                                 #manages the incrementation of speed_y
         'hit': False,
     }
 
-    if random.random() >= 0.75:     #Return the next random floating point number in the range [0.0, 1.0) to keep the fruits/ingredients inside the gameDisplay
+    if random.random() >= 0.75:     #Return the next random floating point number in the range [0.0, 1.0) to keep the fruits/sushi ingredients inside the gameDisplay
         data[ingredient]['throw'] = True
     else:
         data[ingredient]['throw'] = False
@@ -131,7 +131,7 @@ while game_running:
         gameDisplay.blit(background, (0, 0))
         gameDisplay.blit(score_text, (0, 0))
         draw_lives(gameDisplay, 690, 5, player_lives, 'sushi/images/red_lives.png')
-        #animates the throwing motion of the fruits/ingredients 
+        #animates the throwing motion of the fruits/sushi ingredients 
         for key, value in data.items():
             if value['throw']:
                 value['x'] += value['speed_x']              #moving the fruits/sushi ingredients in x-coordinates
@@ -151,7 +151,7 @@ while game_running:
                             hide_cross_lives(725, 15)
                         elif player_lives == 2 :
                             hide_cross_lives(760, 15)
-                        #if the user misses fruits and has no more lives, GAME OVER message should be displayed and the window should be reset
+                        #if the user misses fruits/sushi ingredients and has no more lives, GAME OVER message should be displayed and the window should be reset
                         if player_lives < 0 :
                             show_gameover_screen()
                             game_over = True
@@ -164,8 +164,8 @@ while game_running:
                 #if it is a tamago/guava, add bonus points 
                 if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
                         and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
-
-                        #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
+                    
+                    #if the user clicks bomb/rice glob, GAME OVER message should be displayed and the window should be reset
                     if key == 'Riceglob' or key == 'bomb':
                         show_gameover_screen()
                         game_over = True
@@ -182,14 +182,14 @@ while game_running:
                                 score += 1
                         score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
                         value['hit'] = True
-            #once all fruits/ingredients have been thrown up, generate a new set of items to be thrown up 
+            #once all fruits/sushi ingredients have been thrown up, generate a new set of items to be thrown up 
             else:
                 generate_random_ingredients(key)
 
         pygame.display.update()
-        clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
+        clock.tick(FPS) # keep loop running at the right speed (manages the frame/second). The loop should update afer every 1/12th of the sec
 
-    # transitions game into medium difficulty level
+    #transitions game into medium difficulty level
     #creates a new dictionary of items to throw up but increases the amount of items thrown up compared to the easy mode 
     #while loop has same structure as the easy mode except that it doesn't account for the very first round of the game
     data = {}
@@ -213,15 +213,15 @@ while game_running:
 
         for key, value in data.items():
             if value['throw']:
-                value['x'] += value['speed_x']          #moving the fruits in x-coordinates
-                value['y'] += value['speed_y']          #moving the fruits in y-coordinate
+                value['x'] += value['speed_x']            #moving the fruits/sushi ingredients in x-coordinates
+                value['y'] += value['speed_y']            #moving the fruits/sushi ingredients in y-coordinate
                 value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
-                value['t'] += 0.9                        #increasing speed_y for next loop
+                value['t'] += 0.9                         #increasing speed_y for next loop
 
                 if value['y'] <= 800:
-                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
+                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit/sushi inside screen dynamically
                 else:
-                    #fruit has disappeared at this point
+                    #fruit/sushi has disappeared at this point
                     if (not value['hit'] and key != 'Riceglob' and key1 == 'ingredients') or (not value['hit'] and key != 'bomb' and key1 == 'fruits'):
                         player_lives -= 1
                         if player_lives == 0:
@@ -230,7 +230,7 @@ while game_running:
                             hide_cross_lives(725, 15)
                         elif player_lives == 2 :
                             hide_cross_lives(760, 15)
-                        #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
+                        #if the user misses fruits/sushi ingredients, GAME OVER message should be displayed and the window should be reset
                         if player_lives < 0 :
                             show_gameover_screen()
                             game_over = True
@@ -243,7 +243,7 @@ while game_running:
                 if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
                         and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
 
-                        #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
+                    #if the user clicks bomb/rice glob, GAME OVER message should be displayed and the window should be reset
                     if key == 'Riceglob' or key == 'bomb':
                         show_gameover_screen()
                         game_over = True
@@ -264,7 +264,7 @@ while game_running:
                 generate_random_ingredients(key)
 
         pygame.display.update()
-        clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th of the sec
+        clock.tick(FPS) # keep loop running at the right speed (manages the frame/second). The loop should update afer every 1/12th of the sec
 
     # transitions game into difficult difficulty level
     #creates a new dictionary of items to throw up but increases the amount of items thrown up compared to the easy and medium difficulty mode 
@@ -289,15 +289,15 @@ while game_running:
 
         for key, value in data.items():
             if value['throw']:
-                value['x'] += value['speed_x']          #moving the fruits in x-coordinates
-                value['y'] += value['speed_y']          #moving the fruits in y-coordinate
+                value['x'] += value['speed_x']          #moving the fruits/sushi ingredients in x-coordinates
+                value['y'] += value['speed_y']          #moving the fruits/sushi ingredients n y-coordinate
                 value['speed_y'] += (.75 * value['t'])    #increasing y-coordinate
                 value['t'] += 0.9                        #increasing speed_y for next loop
 
                 if value['y'] <= 800:
-                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
+                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit/sushi inside screen dynamically
                 else:
-                    #fruit has disappeared at this point
+                    #fruit/ingredient has disappeared at this point
                     if (not value['hit'] and key != 'Riceglob' and key1 == 'ingredients') or (not value['hit'] and key != 'bomb' and key1 == 'fruits'):
                         player_lives -= 1
                         if player_lives == 0:
@@ -306,7 +306,7 @@ while game_running:
                             hide_cross_lives(725, 15)
                         elif player_lives == 2 :
                             hide_cross_lives(760, 15)
-                        #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
+                        #if the user misses fruits/sushi ingredients, GAME OVER message should be displayed and the window should be reset
                         if player_lives < 0 :
                             show_gameover_screen()
                             game_over = True
@@ -319,7 +319,7 @@ while game_running:
                 if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
                         and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
 
-                        #if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
+                    #if the user clicks bomb/rice glob, GAME OVER message should be displayed and the window should be reset
                     if key == 'Riceglob' or key == 'bomb':
                         show_gameover_screen()
                         game_over = True
