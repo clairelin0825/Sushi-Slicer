@@ -175,7 +175,7 @@ while game_running:
                         value['img'] = pygame.image.load(cut_ingredient_path)
                         value['speed_x'] += 10
                         if key != 'Riceglob' or key != 'bomb':
-                            if key == 'Tamago':
+                            if key == 'Tamago' or key == 'guava':
                                 score += 2
                             else:
                                 score += 1
@@ -250,7 +250,7 @@ while game_running:
                         value['speed_x'] += 10
 
                     if key != 'Riceglob' or key != 'bomb':
-                        if key == 'Tamago':
+                        if key == 'Tamago' or key == 'guava':
                             score += 2
                         else:
                             score += 1
@@ -324,7 +324,7 @@ while game_running:
                         value['speed_x'] += 10
 
                     if key != 'Riceglob' or key != 'bomb':
-                        if key == 'Tamago':
+                        if key == 'Tamago' or key == 'guava':
                             score += 2
                         else:
                             score += 1
