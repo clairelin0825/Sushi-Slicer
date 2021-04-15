@@ -84,13 +84,16 @@ def draw_lives(display, x, y, lives, image) :
 # show game over display & front display
 key1 = ''
 def show_gameover_screen():
+    global key1
+    global background
+    global data 
     gameDisplay.blit(background1, (0,0))
     draw_text(gameDisplay, "Fruit Ninja/Sushi Slicer!", 90, WIDTH / 2, HEIGHT / 4)
     if not game_over :
         draw_text(gameDisplay,"Score : " + str(score), 50, WIDTH / 2, HEIGHT /2)
 
-    draw_text(gameDisplay, "Press SPACE to begin Sushi Slicer mode!", 40, WIDTH / 2, HEIGHT * 3 / 4)
-    draw_text(gameDisplay, "Press RETURN to begin Fruit Ninja mode!", 40, WIDTH / 2, HEIGHT * 2 / 3)
+    draw_text(gameDisplay, "Press RETURN to begin Sushi Slicer mode!", 40, WIDTH / 2, HEIGHT * 3 / 4)
+    draw_text(gameDisplay, "Press SPACE to begin Fruit Ninja mode!", 40, WIDTH / 2, HEIGHT * 2 / 3)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -101,22 +104,22 @@ def show_gameover_screen():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE: #fruit ninja mode
                     key1 = 'fruits'
-                    background = pygame.image.load('seaweed.jpeg')
+                    background = pygame.image.load('back.jpg')
+                    data = {}
+                    for i in range(0, 3):
+                        generate_random_ingredients(fruits[i])
                     waiting = False
                 if event.key == pygame.K_RETURN: #sushi slicer mode
                     key1 = 'ingredients'
-                    background = pygame.image.load('back.jpg')
+                    background = pygame.image.load('seaweed.jpeg')
+                    data = {}
+                    for i in range(0, 3):
+                        generate_random_ingredients(ingredients[i])
                     waiting = False
-'''
-if key1 == 'fruits':
-    for i in range(0, 3):
-        generate_random_ingredients(fruits[i])
-else:
-    for i in range(0, 3):
-        generate_random_ingredients(ingredients[i])
-'''
+
 
 # Game Loop
+                    
 first_round = True
 game_over = True        #terminates the game While loop if a bomb/riceglob is sliced or three lives have been lost 
 game_running = True
@@ -125,7 +128,6 @@ game_running = True
 while game_running:
     
     # easy loop
-    data = {}
     
     while score < 4:
         if game_over:
@@ -133,13 +135,6 @@ while game_running:
                 show_gameover_screen()
                 first_round = False
                 show_gameover_screen()
-                print(key1)
-                if key1 == 'fruits':
-                    for i in range(0, 3):
-                        generate_random_ingredients(fruits[i])
-                else:
-                    for i in range(0, 3):
-                        generate_random_ingredients(ingredients[i])
                 first_round = False
             game_over = False
             player_lives = 3
@@ -165,7 +160,7 @@ while game_running:
                     gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
                 else:
                     #fruit has disappeared at this point
-                    if (not value['hit'] and key != 'Riceglob'): #or (not value['hit'] and key != 'bomb'):
+                    if (not value['hit'] and key != 'Riceglob' and key1 == 'ingredients') or (not value['hit'] and key != 'bomb' and key1 == 'fruits'):
                         player_lives -= 1
                         if player_lives == 0:
                             hide_cross_lives(690, 15)
@@ -238,7 +233,7 @@ while game_running:
                     gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
                 else:
                     #fruit has disappeared at this point
-                    if (not value['hit'] and key != 'Riceglob'): # or (not value['hit'] and key != 'bomb'):
+                    if (not value['hit'] and key != 'Riceglob' and key1 == 'ingredients') or (not value['hit'] and key != 'bomb' and key1 == 'fruits'):
                         player_lives -= 1
                         if player_lives == 0:
                             hide_cross_lives(690, 15)
@@ -312,7 +307,7 @@ while game_running:
                     gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
                 else:
                     #fruit has disappeared at this point
-                    if (not value['hit'] and key != 'Riceglob'): # or (not value['hit'] and key != 'bomb'):
+                    if (not value['hit'] and key != 'Riceglob' and key1 == 'ingredients') or (not value['hit'] and key != 'bomb' and key1 == 'fruits'):
                         player_lives -= 1
                         if player_lives == 0:
                             hide_cross_lives(690, 15)
