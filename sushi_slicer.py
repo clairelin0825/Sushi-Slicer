@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr  6 16:49:59 2021
-
-@author: claire
-"""
-
 import pygame
 import os
 import random
@@ -86,7 +78,7 @@ key1 = ''
 def show_gameover_screen():
     global key1
     global background
-    global data 
+    global data
     gameDisplay.blit(background1, (0,0))
     draw_text(gameDisplay, "Fruit Ninja/Sushi Slicer!", 90, WIDTH / 2, HEIGHT / 4)
     if not game_over :
@@ -117,23 +109,29 @@ def show_gameover_screen():
                         generate_random_ingredients(ingredients[i])
                     waiting = False
 
+   
+
+
+'''
+if key1 == 'fruits':
+    for i in range(0, 3):
+        generate_random_ingredients(fruits[i])
+else:
+    for i in range(0, 3):
+        generate_random_ingredients(ingredients[i])
+'''
 
 # Game Loop
-                    
 first_round = True
-game_over = True        #terminates the game While loop if a bomb/riceglob is sliced or three lives have been lost 
+game_over = True        #terminates the game While loop if a bomb/riceglob is sliced or three lives have been lost
 game_running = True
-
 #used to manage the game loop
 while game_running:
-    
     # easy loop
-    
+
     while score < 4:
         if game_over:
             if first_round:
-                show_gameover_screen()
-                first_round = False
                 show_gameover_screen()
                 first_round = False
             game_over = False
@@ -210,9 +208,9 @@ while game_running:
     else:
         for i in range(0, 5):
             generate_random_ingredients(ingredients[i])
-      
+
     game_running = True
-    
+
     while score >= 4 and score < 10:
         for event in pygame.event.get():
             # checking for closing window
