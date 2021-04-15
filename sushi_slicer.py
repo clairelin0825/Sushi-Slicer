@@ -5,13 +5,13 @@ pygame.init()
 
 player_lives = 3                                                #keep track of lives
 score = 0                                                       #keeps track of score
-ingredients = ['Riceglob', 'Tamago', 'Avocado', 'Carrot', 'Crab', 'Cucumber', 'Eel', 'Salmon', 'Shrimp', 'Tuna']    #entities in the game
-fruits = ['bomb', 'guava', 'melon', 'orange', 'pomegranate']
+ingredients = ['Riceglob', 'Tamago', 'Avocado', 'Carrot', 'Crab', 'Cucumber', 'Eel', 'Salmon', 'Shrimp', 'Tuna']    #initialize names of the sushi ingredients in a list
+fruits = ['bomb', 'guava', 'melon', 'orange', 'pomegranate'] #initialize names of fruits in a list
 
 # initialize pygame and create window
 WIDTH = 800
 HEIGHT = 500
-FPS = 12                                                 #controls how often the gameDisplay should refresh. In our case, it will refresh every 1/12th second
+FPS = 12  #controls how often the gameDisplay should refresh. In our case, it will refresh every 1/12th second
 pygame.init()
 pygame.display.set_caption('Sushi Slicer/Fruit Ninja Game -- Yannie & Claire')
 gameDisplay = pygame.display.set_mode((WIDTH, HEIGHT))   #setting game display size
@@ -24,7 +24,7 @@ RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 
-background1 = pygame.image.load('sushi/background.jpeg')
+background1 = pygame.image.load('sushi/background.jpeg') 
 background1 = pygame.transform.scale(background1, (800,500))
 font = pygame.font.Font(os.path.join(os.getcwd(), 'sushi/comic.ttf'), 42)
 score_text = font.render('Score : ' + str(score), True, (255, 255, 255))    #score display
@@ -41,15 +41,15 @@ def generate_random_ingredients(ingredient):
         'speed_x': random.randint(-10,10),      #how fast the fruit should move in x direction. Controls the diagonal movement of fruits
         'speed_y': random.randint(-80, -60),    #control the speed of fruits in y-directionn ( UP )
         'throw': False,                         #determines if the generated coordinate of the fruits is outside the gameDisplay or not. If outside, then it will be discarded
-        't': 0,                                 #manages the
+        't': 0,                                 #manages the incrementation of speed_y
         'hit': False,
     }
 
-    if random.random() >= 0.75:     #Return the next random floating point number in the range [0.0, 1.0) to keep the fruits inside the gameDisplay
+    if random.random() >= 0.75:     #Return the next random floating point number in the range [0.0, 1.0) to keep the fruits/ingredients inside the gameDisplay
         data[ingredient]['throw'] = True
     else:
         data[ingredient]['throw'] = False
-
+#deletes a red cross every single time the user loses a life 
 def hide_cross_lives(x, y):
     gameDisplay.blit(pygame.image.load("sushi/images/red_lives.png"), (x, y))
 
@@ -70,9 +70,8 @@ def draw_lives(display, x, y, lives, image) :
         img_rect.x = int(x + 35 * i)    #sets the next cross icon 35pixels awt from the previous one
         img_rect.y = y                  #takes care of how many pixels the cross icon should be positioned from top of the screen
         display.blit(img, img_rect)
-
-# show game over display & front display
 key1 = ''
+# show game over display & front display
 def show_gameover_screen():
     global key1
     global background
@@ -92,14 +91,14 @@ def show_gameover_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE: #fruit ninja mode
+                if event.key == pygame.K_SPACE: #activates fruit ninja mode if space bar is pressed 
                     key1 = 'fruits'
                     background = pygame.image.load('sushi/back.jpg')
                     data = {}
                     for i in range(0, 3):
                         generate_random_ingredients(fruits[i])
                     waiting = False
-                if event.key == pygame.K_RETURN: #sushi slicer mode
+                if event.key == pygame.K_RETURN: #activates sushi slicer mode if return key is pressed 
                     key1 = 'ingredients'
                     background = pygame.image.load('sushi/seaweed.jpeg')
                     data = {}
@@ -109,13 +108,12 @@ def show_gameover_screen():
 
 # Game Loop
 first_round = True
-game_over = True        #terminates the game While loop if a bomb/riceglob is sliced or three lives have been lost
+game_over = True        #terminates the game while loop if a bomb/riceglob is sliced or three lives have been lost
 game_running = True
 
 #used to manage the game loop
 while game_running:
-    # easy loop
-
+    # starts game off with easy as the difficulty level 
     while score < 4:
         if game_over:
             if first_round:
@@ -133,18 +131,18 @@ while game_running:
         gameDisplay.blit(background, (0, 0))
         gameDisplay.blit(score_text, (0, 0))
         draw_lives(gameDisplay, 690, 5, player_lives, 'sushi/images/red_lives.png')
-
+        #animates the throwing motion of the fruits/ingredients 
         for key, value in data.items():
             if value['throw']:
-                value['x'] += value['speed_x']              #moving the fruits in x-coordinates
-                value['y'] += value['speed_y']              #moving the fruits in y-coordinate
+                value['x'] += value['speed_x']              #moving the fruits/sushi ingredients in x-coordinates
+                value['y'] += value['speed_y']              #moving the fruits/sushi ingredients in y-coordinate
                 value['speed_y'] += (.75 * value['t'])      #increasing y-coordinate
                 value['t'] += 0.9                           #increasing speed_y for next loop
 
                 if value['y'] <= 800:
-                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit inside screen dynamically
+                    gameDisplay.blit(value['img'], (value['x'], value['y']))    #displaying the fruit/ingredient inside screen dynamically
                 else:
-                    #fruit has disappeared at this point
+                    #decreases the number of lives each time the user does not slice an ingredient/fruit
                     if (not value['hit'] and key != 'Riceglob' and key1 == 'ingredients') or (not value['hit'] and key != 'bomb' and key1 == 'fruits'):
                         player_lives -= 1
                         if player_lives == 0:
@@ -153,7 +151,7 @@ while game_running:
                             hide_cross_lives(725, 15)
                         elif player_lives == 2 :
                             hide_cross_lives(760, 15)
-                        #if the user misses fruits, GAME OVER message should be displayed and the window should be reset
+                        #if the user misses fruits and has no more lives, GAME OVER message should be displayed and the window should be reset
                         if player_lives < 0 :
                             show_gameover_screen()
                             game_over = True
@@ -161,7 +159,9 @@ while game_running:
                     generate_random_ingredients(key)
 
                 current_position = pygame.mouse.get_pos()   #gets the current coordinate (x, y) in pixels of the mouse
-
+                #if the user hits the fruit/ingredient, check to see if it is a bomb/riceglob or tamago/guava
+                #if it is a bomb/riceglob, game terminates
+                #if it is a tamago/guava, add bonus points 
                 if not value['hit'] and current_position[0] > value['x']-70 and current_position[0] < value['x']+70 \
                         and current_position[1] > value['y'] -70 and current_position[1] < value['y']+70:
 
@@ -171,6 +171,7 @@ while game_running:
                         game_over = True
                         score = 0
                     else:
+                        #generating the cut image of the sushi ingredients or fruits 
                         cut_ingredient_path = "sushi/images/cut_" + key + ".png"
                         value['img'] = pygame.image.load(cut_ingredient_path)
                         value['speed_x'] += 10
@@ -181,13 +182,16 @@ while game_running:
                                 score += 1
                         score_text = font.render('Score : ' + str(score), True, (255, 255, 255))
                         value['hit'] = True
+            #once all fruits/ingredients have been thrown up, generate a new set of items to be thrown up 
             else:
                 generate_random_ingredients(key)
 
         pygame.display.update()
         clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
 
-    #medium loop
+    # transitions game into medium difficulty level
+    #creates a new dictionary of items to throw up but increases the amount of items thrown up compared to the easy mode 
+    #while loop has same structure as the easy mode except that it doesn't account for the very first round of the game
     data = {}
     if key1 == 'fruits':
         for i in range(0, 5):
@@ -260,9 +264,11 @@ while game_running:
                 generate_random_ingredients(key)
 
         pygame.display.update()
-        clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th pf the sec
+        clock.tick(FPS) # keep loop running at the right speed (manages the frame/second. The loop should update afer every 1/12th of the sec
 
-    # hard loop
+    # transitions game into difficult difficulty level
+    #creates a new dictionary of items to throw up but increases the amount of items thrown up compared to the easy and medium difficulty mode 
+    #while loop has same structure as the easy mode except that it doesn't account for the very first round of the game
     data = {}
     if key1 == 'fruits':
         for fruit in fruits:
