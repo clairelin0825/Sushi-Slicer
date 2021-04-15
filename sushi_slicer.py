@@ -51,7 +51,7 @@ def generate_random_ingredients(ingredient):
         data[ingredient]['throw'] = False
 
 def hide_cross_lives(x, y):
-    gameDisplay.blit(pygame.image.load("images/red_lives.png"), (x, y))
+    gameDisplay.blit(pygame.image.load("sushi/images/red_lives.png"), (x, y))
 
 # Generic method to draw fonts on the screen
 font_name = pygame.font.match_font('comic.ttf')
