@@ -1,6 +1,8 @@
 # Sushi-Slicer
 Language: Python
+
 Packages needed: Pygame, os, random 
+
 Images: please download the “sushi” folder
 
 For our project, we will be coding a game called Sushi Slicer, which resembles the phone game Fruit Ninja, except using sushi ingredients instead of fruits. The user will be given the choice to choose between Sushi Slicer mode and Fruit Ninja mode within our Sushi Slicer game. The components of our game that will appear on the screen include a background of seaweed/wooden backboard (depends on mode the user chooses), a point tracker, three lives, a riceglob/bomb (for immediate termination), and different sushi ingredients: shrimp, crab, eel, avocado, cucumber, salmon, tuna, carrot, and tamago, or fruits: guava, melon, orange, and pomegranate.
