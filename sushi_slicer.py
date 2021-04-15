@@ -24,18 +24,16 @@ RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 
-background = pygame.image.load('seaweed.jpeg')                              #game background
-# background = pygame.image.load('back.jpg')
-background1 = pygame.image.load('background.jpeg')
+background1 = pygame.image.load('sushi/background.jpeg')
 background1 = pygame.transform.scale(background1, (800,500))
 font = pygame.font.Font(os.path.join(os.getcwd(), 'comic.ttf'), 42)
 score_text = font.render('Score : ' + str(score), True, (255, 255, 255))    #score display
-lives_icon = pygame.image.load('images/white_lives.png')                    #images that shows remaining lives
+lives_icon = pygame.image.load('sushi/images/white_lives.png')                    #images that shows remaining lives
 
 # Generalized structure of the fruit Dictionary
 data = {}
 def generate_random_ingredients(ingredient):
-    ingredient_path = "images/" + ingredient + ".png"
+    ingredient_path = "sushi/images/" + ingredient + ".png"
     data[ingredient] = {
         'img': pygame.image.load(ingredient_path),
         'x' : random.randint(100,500),          #where the fruit should be positioned on x-coordinate
@@ -96,35 +94,24 @@ def show_gameover_screen():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE: #fruit ninja mode
                     key1 = 'fruits'
-                    background = pygame.image.load('back.jpg')
+                    background = pygame.image.load('sushi/back.jpg')
                     data = {}
                     for i in range(0, 3):
                         generate_random_ingredients(fruits[i])
                     waiting = False
                 if event.key == pygame.K_RETURN: #sushi slicer mode
                     key1 = 'ingredients'
-                    background = pygame.image.load('seaweed.jpeg')
+                    background = pygame.image.load('sushi/seaweed.jpeg')
                     data = {}
                     for i in range(0, 3):
                         generate_random_ingredients(ingredients[i])
                     waiting = False
 
-   
-
-
-'''
-if key1 == 'fruits':
-    for i in range(0, 3):
-        generate_random_ingredients(fruits[i])
-else:
-    for i in range(0, 3):
-        generate_random_ingredients(ingredients[i])
-'''
-
 # Game Loop
 first_round = True
 game_over = True        #terminates the game While loop if a bomb/riceglob is sliced or three lives have been lost
 game_running = True
+
 #used to manage the game loop
 while game_running:
     # easy loop
@@ -136,7 +123,7 @@ while game_running:
                 first_round = False
             game_over = False
             player_lives = 3
-            draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+            draw_lives(gameDisplay, 690, 5, player_lives, 'sushi/images/red_lives.png')
             score = 0
         for event in pygame.event.get():
             # checking for closing window
@@ -145,7 +132,7 @@ while game_running:
 
         gameDisplay.blit(background, (0, 0))
         gameDisplay.blit(score_text, (0, 0))
-        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+        draw_lives(gameDisplay, 690, 5, player_lives, 'sushi/images/red_lives.png')
 
         for key, value in data.items():
             if value['throw']:
@@ -184,7 +171,7 @@ while game_running:
                         game_over = True
                         score = 0
                     else:
-                        cut_ingredient_path = "images/cut_" + key + ".png"
+                        cut_ingredient_path = "sushi/images/cut_" + key + ".png"
                         value['img'] = pygame.image.load(cut_ingredient_path)
                         value['speed_x'] += 10
                         if key != 'Riceglob' or key != 'bomb':
@@ -218,7 +205,7 @@ while game_running:
                 game_running = False
         gameDisplay.blit(background, (0, 0))
         gameDisplay.blit(score_text, (0, 0))
-        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+        draw_lives(gameDisplay, 690, 5, player_lives, 'sushi/images/red_lives.png')
 
         for key, value in data.items():
             if value['throw']:
@@ -258,7 +245,7 @@ while game_running:
                         game_over = True
                         score = 0
                     else:
-                        cut_ingredient_path = "images/cut_" + key + ".png"
+                        cut_ingredient_path = "sushi/images/cut_" + key + ".png"
                         value['img'] = pygame.image.load(cut_ingredient_path)
                         value['speed_x'] += 10
 
@@ -292,7 +279,7 @@ while game_running:
                 game_running = False
         gameDisplay.blit(background, (0, 0))
         gameDisplay.blit(score_text, (0, 0))
-        draw_lives(gameDisplay, 690, 5, player_lives, 'images/red_lives.png')
+        draw_lives(gameDisplay, 690, 5, player_lives, 'sushi/images/red_lives.png')
 
         for key, value in data.items():
             if value['throw']:
@@ -332,7 +319,7 @@ while game_running:
                         game_over = True
                         score = 0
                     else:
-                        cut_ingredient_path = "images/cut_" + key + ".png"
+                        cut_ingredient_path = "sushi/images/cut_" + key + ".png"
                         value['img'] = pygame.image.load(cut_ingredient_path)
                         value['speed_x'] += 10
 
